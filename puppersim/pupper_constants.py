@@ -24,7 +24,10 @@ import collections
 import gin
 import numpy as np
 import puppersim.data as pd
-URDF_PATH = pd.getDataPath()+"/pupper_v2a.urdf" #or pupper_v2b with toes, but no visual meshes
+
+URDF_PATH = (
+    pd.getDataPath() + "/pupper_v2a.urdf"
+)  # or pupper_v2b with toes, but no visual meshes
 
 NUM_MOTORS = 12
 NUM_LEGS = 4
@@ -65,22 +68,25 @@ INIT_KNEE_ANGLE = -1.2
 # offsets and directions. The conversion formula is (sdk_joint_angle + offset) *
 # joint direction.
 INIT_JOINT_ANGLES = collections.OrderedDict(
-    zip(JOINT_NAMES,
-        (INIT_ABDUCTION_ANGLE, INIT_HIP_ANGLE, INIT_KNEE_ANGLE) * NUM_LEGS))
+    zip(JOINT_NAMES, (INIT_ABDUCTION_ANGLE, INIT_HIP_ANGLE, INIT_KNEE_ANGLE) * NUM_LEGS)
+)
 
 # Used to convert the robot SDK joint angles to URDF joint angles.
 JOINT_DIRECTIONS = collections.OrderedDict(
-    zip(JOINT_NAMES, (-1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1)))
+    zip(JOINT_NAMES, (-1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1))
+)
 
 HIP_JOINT_OFFSET = 0.0
-UPPER_LEG_JOINT_OFFSET = 0#-0.6
-KNEE_JOINT_OFFSET = 0#0.66
+UPPER_LEG_JOINT_OFFSET = 0  # -0.6
+KNEE_JOINT_OFFSET = 0  # 0.66
 
 # Used to convert the robot SDK joint angles to URDF joint angles.
 JOINT_OFFSETS = collections.OrderedDict(
-    zip(JOINT_NAMES,
-        [HIP_JOINT_OFFSET, UPPER_LEG_JOINT_OFFSET, KNEE_JOINT_OFFSET] *
-        NUM_LEGS))
+    zip(
+        JOINT_NAMES,
+        [HIP_JOINT_OFFSET, UPPER_LEG_JOINT_OFFSET, KNEE_JOINT_OFFSET] * NUM_LEGS,
+    )
+)
 
 LEG_NAMES = (
     "front_right",
@@ -104,27 +110,31 @@ END_EFFECTOR_NAMES = (
 )
 
 MOTOR_NAMES = JOINT_NAMES
-MOTOR_GROUP = collections.OrderedDict((
-    (LEG_NAMES[0], JOINT_NAMES[0:3]),
-    (LEG_NAMES[1], JOINT_NAMES[3:6]),
-    (LEG_NAMES[2], JOINT_NAMES[6:9]),
-    (LEG_NAMES[3], JOINT_NAMES[9:12]),
-))
+MOTOR_GROUP = collections.OrderedDict(
+    (
+        (LEG_NAMES[0], JOINT_NAMES[0:3]),
+        (LEG_NAMES[1], JOINT_NAMES[3:6]),
+        (LEG_NAMES[2], JOINT_NAMES[6:9]),
+        (LEG_NAMES[3], JOINT_NAMES[9:12]),
+    )
+)
 
 # Regulates the joint angle change when in position control mode.
 MAX_MOTOR_ANGLE_CHANGE_PER_STEP = 0.02
 
 # The hip joint location in the CoM frame.
-HIP_POSITIONS = collections.OrderedDict((
-    (LEG_NAMES[0], (0.21, -0.1157, 0)),
-    (LEG_NAMES[1], (0.21, 0.1157, 0)),
-    (LEG_NAMES[2], (-0.21, -0.1157, 0)),
-    (LEG_NAMES[3], (-0.21, 0.1157, 0)),
-))
+HIP_POSITIONS = collections.OrderedDict(
+    (
+        (LEG_NAMES[0], (0.21, -0.1157, 0)),
+        (LEG_NAMES[1], (0.21, 0.1157, 0)),
+        (LEG_NAMES[2], (-0.21, -0.1157, 0)),
+        (LEG_NAMES[3], (-0.21, 0.1157, 0)),
+    )
+)
 
-MOTOR_ACTION_LOWER_LIMIT = np.array([-0.18,0.1,-2.3]*4)
-MOTOR_ACTION_UPPER_LIMIT = np.array([0.18,0.7,-0.6]*4)
-  
+MOTOR_ACTION_LOWER_LIMIT = np.array([-0.18, 0.1, -2.3] * 4)
+MOTOR_ACTION_UPPER_LIMIT = np.array([0.18, 0.7, -0.6] * 4)
+
 # Add the gin constants to be used for gin binding in config. Append "PUPPER_"
 # for unique binding names.
 gin.constant("pupper_constants.PUPPER_NUM_MOTORS", NUM_MOTORS)
@@ -139,4 +149,3 @@ gin.constant("pupper_constants.PUPPER_END_EFFECTOR_NAMES", END_EFFECTOR_NAMES)
 gin.constant("pupper_constants.PUPPER_MOTOR_GROUP", MOTOR_GROUP)
 gin.constant("pupper_constants.MOTOR_ACTION_LOWER_LIMIT", MOTOR_ACTION_LOWER_LIMIT)
 gin.constant("pupper_constants.MOTOR_ACTION_UPPER_LIMIT", MOTOR_ACTION_UPPER_LIMIT)
-
