@@ -13,7 +13,8 @@ import deep_control as dc
 
 def create_pupper_env(args, seed):
     CONFIG_DIR = puppersim.getPupperSimPath() + "/"
-    _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_with_imu.gin")
+    # _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_with_imu.gin")
+    _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_pmtg.gin")
     gin.bind_parameter("scene_base.SceneBase.data_root", pd.getDataPath() + "/")
     gin.parse_config_file(_CONFIG_FILE)
     # gin.bind_parameter("SimulationParameters.enable_rendering", True)
@@ -25,7 +26,6 @@ def create_pupper_env(args, seed):
     env = dc.envs.PersistenceAwareWrapper(
         env, k=args.k, return_history=False, discount=args.gamma
     )
-    breakpoint()
     return env
 
 
