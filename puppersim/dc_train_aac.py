@@ -11,6 +11,13 @@ import puppersim.data as pd
 import deep_control as dc
 
 
+"""
+Trains Automatic Actor Critic (AAC) on the Puppersim environment.
+
+AAC is implemented in https://github.com/jakegrigsby/deep_control/blob/master/deep_control/aac.py
+"""
+
+
 def create_pupper_env(render=False):
     CONFIG_DIR = puppersim.getPupperSimPath() + "/"
     # _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_with_imu.gin")
@@ -34,7 +41,7 @@ def create_parser():
 
 
 def train_gym(args):
-    aac = dc.aac.aac(create_pupper_env, **vars(args))
+    return dc.aac.aac(create_pupper_env, **vars(args))
 
 
 if __name__ == "__main__":
