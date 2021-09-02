@@ -26,6 +26,7 @@ class SimpleForwardTask(task_interface.Task):
         energy_penalty_coef=0.0,
         min_com_height=None,
         weight_action_accel=None,
+        straightline_coef=0.0,
     ):
         """Initializes the task.
 
@@ -54,6 +55,7 @@ class SimpleForwardTask(task_interface.Task):
         self._action_history_sensor = None
         self._min_com_height = min_com_height
         self._energy_penalty_coef = energy_penalty_coef
+        self._straightline_coef = straightline_coef
         self._env = None
         self._step_count = 0
         if energy_penalty_coef < 0:
@@ -89,6 +91,9 @@ class SimpleForwardTask(task_interface.Task):
         velocity = -(
             current_base_position[1] - self._last_base_position[1]
         )  # negative Y axis
+
+        x_dist = abs(current_base_position[0])
+
         if self._divide_with_dt:
             velocity /= env.env_time_step
         if self._clip_velocity is not None:
@@ -107,8 +112,9 @@ class SimpleForwardTask(task_interface.Task):
                 np.abs(acc)
             )
 
-        reward = velocity
+        reward = velocity - (self._straightline_coef * x_dist)
         reward -= action_acceleration_penalty
+        print(reward)
 
         # Energy
         if self._energy_penalty_coef > 0:

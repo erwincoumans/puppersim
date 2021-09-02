@@ -20,8 +20,7 @@ AAC is implemented in https://github.com/jakegrigsby/deep_control/blob/master/de
 
 def create_pupper_env(render=False):
     CONFIG_DIR = puppersim.getPupperSimPath() + "/"
-    # _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_with_imu.gin")
-    _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_pmtg.gin")
+    _CONFIG_FILE = os.path.join(CONFIG_DIR, "pupper_pmtg_slow.gin")
     gin.bind_parameter("scene_base.SceneBase.data_root", pd.getDataPath() + "/")
     gin.parse_config_file(_CONFIG_FILE)
     if render:

@@ -2,6 +2,7 @@ import numpy as np
 import gym
 import time
 import torch
+import pickle
 import random
 import pybullet_envs
 
@@ -30,9 +31,9 @@ def main(argv):
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--expert_policy_file", type=str, default="")
-    parser.add_argument("--nosleep", action="store_true")
-
+    parser.add_argument("--expert_policy_file", type=str, required=True)
+    parser.add_argument("--track_motors", type=str, default=None)
+    parser.add_argument("--max_steps", type=int, default=10_000)
     parser.add_argument(
         "--num_rollouts", type=int, default=20, help="Number of expert rollouts"
     )
@@ -48,33 +49,36 @@ def main(argv):
     returns = []
     observations = []
     actions = []
+    motor_angle_histories = []
     for i in range(args.num_rollouts):
+        motor_angles = []
         print("iter", i)
         obs = env.reset()
         done = False
         totalr = 0.0
         steps = 0
-        while not done:
+        while not done and steps < args.max_steps:
             with torch.no_grad():
                 action = (
                     policy(torch.from_numpy(obs).unsqueeze(0).float())
                     .mean.squeeze()
                     .numpy()
                 )
-                # action = env.action_space.sample()
             observations.append(obs)
             actions.append(action)
 
-            # time.sleep(1)
             obs, r, done, _ = env.step(action)
+            motor_angles.append(obs[:-2])
             totalr += r
             steps += 1
-
-            # if steps % 100 == 0: print("%i/%i"%(steps, env.spec.timestep_limit))
-            # if steps >= env.spec.timestep_limit:
-            #    break
-        # print("steps=",steps)
         returns.append(totalr)
+        motor_angle_histories.append(motor_angles)
+
+    if args.track_motors:
+        with open(args.track_motors, "wb") as f:
+            motor_angle_histories = np.array(motor_angle_histories)
+            returns = np.array(returns)
+            pickle.dump({"returns": returns, "motor_angles": motor_angle_histories}, f)
 
     print("returns", returns)
     print("mean return", np.mean(returns))
