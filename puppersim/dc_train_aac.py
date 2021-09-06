@@ -50,8 +50,9 @@ if __name__ == "__main__":
     torch.multiprocessing.set_sharing_strategy("file_system")
 
     args = create_parser()
-    args.steps_per_epoch = 4000
+    args.steps_per_epoch = 10_000
     args.epochs = 300
-    args.max_episode_steps = 2000
+    args.max_episode_steps = 10_000
+    args.eval_episodes = 1
 
     train_gym(args)

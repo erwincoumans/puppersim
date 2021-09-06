@@ -114,7 +114,6 @@ class SimpleForwardTask(task_interface.Task):
 
         reward = velocity - (self._straightline_coef * x_dist)
         reward -= action_acceleration_penalty
-        print(reward)
 
         # Energy
         if self._energy_penalty_coef > 0:

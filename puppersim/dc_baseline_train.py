@@ -132,11 +132,9 @@ def train_gym(args, train_env, test_env, buffer):
 
 if __name__ == "__main__":
     args = create_parser()
-    args.max_episode_steps = 2000
     args.eval_interval = 10_000
 
-    # seed = random.randint(1, 100) if not args
-    seed = 37
+    seed = random.randint(1, 100)
     train_env = create_pupper_env(args, seed)
     test_env = create_pupper_env(args, seed)
 

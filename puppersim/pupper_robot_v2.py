@@ -16,7 +16,8 @@ class PupperRobot(quadruped_base.QuadrupedBase):
     """The Pupper robot interface."""
 
     def __init__(
-        self, **kwargs,
+        self,
+        **kwargs,
     ):
         """Constructs a Pupper robot interface.
 
