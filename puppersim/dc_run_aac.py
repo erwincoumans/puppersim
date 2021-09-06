@@ -34,16 +34,19 @@ def main(argv):
     parser.add_argument("--expert_policy_file", type=str, required=True)
     parser.add_argument("--track_motors", type=str, default=None)
     parser.add_argument("--max_steps", type=int, default=10_000)
+    parser.add_argument("--k", type=int, default=1)
+    parser.add_argument("--hidden_size", type=int, default=64)
     parser.add_argument(
         "--num_rollouts", type=int, default=20, help="Number of expert rollouts"
     )
     args = parser.parse_args()
     env = create_pupper_env(render=True)
+    env.set_k(args.k)
 
     ob_dim = env.observation_space.shape[0]
     ac_dim = env.action_space.shape[0]
 
-    policy = StochasticActor(ob_dim, ac_dim, -10.0, 2.0, hidden_size=64)
+    policy = StochasticActor(ob_dim, ac_dim, -10.0, 2.0, hidden_size=args.hidden_size)
     policy.load_state_dict(torch.load(args.expert_policy_file))
 
     returns = []
