@@ -92,7 +92,7 @@ class SimpleForwardTask(task_interface.Task):
             current_base_position[1] - self._last_base_position[1]
         )  # negative Y axis
 
-        x_dist = abs(current_base_position[0])
+        x_dist = abs(current_base_position[0] - self._last_base_position[0])
 
         if self._divide_with_dt:
             velocity /= env.env_time_step
