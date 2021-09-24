@@ -49,9 +49,9 @@ locomotion_gym_env.LocomotionGymEnv.task = @pupper_locomotion_task.SimpleForward
 pupper_locomotion_task.SimpleForwardTask.terminal_condition = @pupper_terminal_conditions.default_terminal_condition_for_pupper
 
 # Safety constraints
-pupper_locomotion_task.SimpleForwardTask.energy_penalty_coef = 0
-pupper_locomotion_task.SimpleForwardTask.clip_velocity = 8e-4
-pupper_locomotion_task.SimpleForwardTask.straightline_coef = 1e-3
+pupper_locomotion_task.SimpleForwardTask.energy_penalty_coef = 1e-4
+pupper_locomotion_task.SimpleForwardTask.clip_velocity = .0008
+pupper_locomotion_task.SimpleForwardTask.straightline_coef = .1
 
 # Specify the motor model parameters. Notice that we don't need to specify the control mode or motor limits here.
 hybrid_motor_model.HybridMotorModel.kp = 16
