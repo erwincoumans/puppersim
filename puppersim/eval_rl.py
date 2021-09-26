@@ -7,6 +7,7 @@ import gym
 import torch
 
 import deep_control as dc
+from stable_baselines3 import PPO
 from wrappers import create_pupper_env
 from train_rl import create_agent
 
@@ -32,10 +33,7 @@ def main():
     ob_dim = env.observation_space.shape[0]
     ac_dim = env.action_space.shape[0]
 
-    if args.alg != "aac":
-        policy = create_agent(args)
-        policy.load(args.expert_policy_file)
-    else:
+    if args.alg == "aac":
         policy = dc.nets.StochasticActor(
             ob_dim,
             ac_dim,
@@ -44,7 +42,19 @@ def main():
             hidden_size=args.hidden_size,
         )
         policy.load_state_dict(torch.load(args.expert_policy_file))
-    policy.to(dc.device)
+        policy.to(dc.device)
+    elif args.alg == "sb3":
+        policy = PPO(
+            "MlpPolicy",
+            env,
+            batch_size=32,
+            verbose=1,
+        )
+        policy.load(f"{args.expert_policy_file}/model_save/best_model.zip")
+    else:
+        policy = create_agent(args)
+        policy.load(args.expert_policy_file)
+        policy.to(dc.device)
 
     returns = []
     observations = []
@@ -58,15 +68,17 @@ def main():
         steps = 0
         while not done and steps < args.max_steps:
             with torch.no_grad():
-                if args.alg != "aac":
-                    action = policy.forward(obs, from_cpu=True)
-                else:
+                if args.alg == "aac":
                     action = (
                         policy(torch.from_numpy(obs).unsqueeze(0).float().to(dc.device))
                         .mean.squeeze()
                         .cpu()
                         .numpy()
                     )
+                elif args.alg == "sb3":
+                    action, _ = policy.predict(obs)
+                else:
+                    action = policy.forward(obs, from_cpu=True)
             observations.append(obs)
             actions.append(action)
             obs, r, done, _ = env.step(action)
