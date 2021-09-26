@@ -7,16 +7,9 @@ from pybullet_envs.minitaur.envs_v2 import env_loader
 import puppersim.data as pd
 
 import deep_control as dc
-try:
-    from stable_baselines3.common.env_util import make_vec_env
-    from stable_baselines3.common.utils import set_random_seed
-    from stable_baselines3.common.monitor import Monitor
-except ImportError:
-    print("Missing stable_baselines3 installtion. Exiting.")
-    exit(0)
-
-
-
+from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.utils import set_random_seed
+from stable_baselines3.common.monitor import Monitor
 
 
 def create_pupper_env(render=False):
@@ -27,7 +20,7 @@ def create_pupper_env(render=False):
     if render:
         gin.bind_parameter("SimulationParameters.enable_rendering", True)
     env = env_loader.load()
-    env = dc.envs.ScaleReward(env, scale=10.0)
+    env = dc.envs.ScaleReward(env, scale=100.0)
     env = dc.envs.NormalizeContinuousActionSpace(env)
     env = dc.envs.PersistenceAwareWrapper(env)
     return env
