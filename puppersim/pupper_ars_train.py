@@ -10,6 +10,7 @@ import time
 import os
 import numpy as np
 import gym
+from packaging import version
 
 import arspb.logz as logz
 import ray
@@ -497,12 +498,18 @@ if __name__ == '__main__':
     # for ARS V1 use filter = 'NoFilter'
     parser.add_argument('--filter', type=str, default='MeanStdFilter')
     parser.add_argument('--activation', type=str, help="Neural network policy activation function, tanh or clip", default="tanh")
+
     parser.add_argument('--policy_network_size', action='store', dest='policy_network_size_list',type=str, nargs='*', default='64,64')
+    parser.add_argument('--redis_address', type=str, default=socket.gethostbyname(socket.gethostname())+':6379') 
    
     args = parser.parse_args()
 
 
-    ray.init()#redis_address="127.0.0.1:6379")
+    print("redis_address=", args.redis_address)
+    if version.parse(ray.__version__) >= version.parse("1.6.0"):
+      ray.init(address=args.redis_address)
+    else:
+      ray.init(redis_address=args.redis_address)
  
     params = vars(args)
     run_ars(params)
